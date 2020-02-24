@@ -1,6 +1,11 @@
 # Byte-compiled / optimized / DLL files
-venv/
-!venv/frozen-requirements-*,!venv/requirements.txt,!venv/constraints.txt,!venv/requirements-base.txt,!venv/requirements-project.txt
+venv/*
+!venv/frozen-requirements-*
+!venv/requirements.txt
+!venv/constraints.txt
+!venv/requirements-base.txt
+!venv/requirements-project.txt
+!venv/pip.conf	
 
 # And all the file types you're interested in.
 !*.one
