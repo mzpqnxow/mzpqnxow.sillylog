@@ -9,3 +9,7 @@ The Python logging module provides very, very powerful and flexible logging capa
 * Consistent naming for logging functions, regardless of scope
 * Ability to easily define output format string specific to each log-level
 * Ability to easily add log-levels to the logging system (e.g. logging.USER)
+
+## License
+
+![License](img/BSD-3Clause.jpg)\
