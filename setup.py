@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-from __future__ import print_function
+"""Standard setuptools setup.py script using versioneer"""
+
+# Python Standard Libraries
+from os.path import abspath, dirname
+
+# External Dependencies
+from setuptools import find_packages, setup
+
+# Package Imports
 import versioneer
-from os.path import (
-    abspath,
-    dirname)
-from setuptools import (
-    setup,
-    find_packages)
 
 AUTHOR = 'mzpqnxow'
 CURDIR = abspath(dirname(__file__))
