@@ -1,4 +1,11 @@
 # Byte-compiled / optimized / DLL files
+venv/
+!venv/frozen-requirements-*,!venv/requirements.txt,!venv/constraints.txt,!venv/requirements-base.txt,!venv/requirements-project.txt
+
+# And all the file types you're interested in.
+!*.one
+!*.two
+!*.etc
 __pycache__/
 *.py[cod]
 *$py.class
@@ -78,14 +85,6 @@ target/
 .python-version
 
 
-# dotenv
-.env
-
-# virtualenv
-.venv
-!venv/frozen-requirements-*,!venv/requirements.txt,!venv/constraints.txt,!venv/requirements-base.txt,!venv/requirements-project.txt
-venv/
-ENV/
 
 
 
