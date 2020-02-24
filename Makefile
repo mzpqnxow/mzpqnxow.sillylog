@@ -202,6 +202,14 @@ doc:
 #
 # - AG
 #
+
+# This is not being published to PyPi, GitHub will be used as the distribution
+# point, so don't worry about building packages or publishing with Twine
+#     python setup.py sdist || (rm -rf dist/ ;  echo Failed to build sdist ; /bin/false)
+#	$(TWINE) upload -r local dist/* --verbose || rm -rf $(BUILD_FILES)
+#	rm -rf $(BUILD_FILES)
+
+
 release:
 	$(eval v := $(shell git describe --tags --abbrev=0 | sed -Ee 's/^v|-.*//'))
 ifeq ($(bump), major)
@@ -211,12 +219,7 @@ else ifeq ($(bump), minor)
 else
 	$(eval f := 3)
 endif
-	git tag -a `echo $(v) | awk -F. -v OFS=. -v f=$(f) '{ $$f++ } 1'` && \
-# This is not being published to PyPi, GitHub will be used as the distribution
-# point, so don't worry about building packages or publishing with Twine
-#     python setup.py sdist || (rm -rf dist/ ;  echo Failed to build sdist ; /bin/false)
-#	$(TWINE) upload -r local dist/* --verbose || rm -rf $(BUILD_FILES)
-#	rm -rf $(BUILD_FILES)
+	git tag -a `echo $(v) | awk -F. -v OFS=. -v f=$(f) '{ $$f++ } 1'`
 	git commit -am "Bumped to version `echo $(v) | awk -F. -v OFS=. -v f=$(f) '{ $$f++ } 1'`" || /bin/true
 	git push --tags
 
