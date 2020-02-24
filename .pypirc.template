@@ -1,0 +1,18 @@
+# Copy this file to ~/.pypirc
+# Fill in your credentials below
+# Then use `make publish` after your final commit
+# `make publish` will push and then publish to the repository
+# Make sure you bump the version number in your setup.py or you
+# will get version collision errors like HTTP 400 or 401
+
+[distutils]
+index-servers = local
+
+[local]
+#
+# Change the domain to point to your local PyPi (Artifactory, or public PyPi)
+# This is set for artifactory, plug your company name in
+#
+repository: https://artifacts.somecompany.com/api/pypi/python-local
+username: %%USER%%
+password: %%PASSWORD%%
