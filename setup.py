@@ -14,16 +14,17 @@ AUTHOR = 'mzpqnxow'
 CURDIR = abspath(dirname(__file__))
 NAMESPACE = ['mzpqnxow']
 PACKAGE = 'sillylog'
-PROJECT_NAME = '{}.{}'.format('.'.join(NAMESPACE), PACKAGE)
+PROJECT_NAME = '{}'.format(PACKAGE)
 DESCRIPTION = 'A package containing common reusable functions and classes'
 URL = 'https://github.com/{}/{}'.format(AUTHOR, PROJECT_NAME)
 EMAIL = 'copyright@mzpqnxow.com'
 LICENSE = 'BSD 3-Clause'
 REQUIRED = [
-    'jinja2', 'ujson']
+    'jinja2',
+    'ujson',
+    'mzpqnxow.sillylog']
 
 NAME = '.'.join(NAMESPACE + [PROJECT_NAME])
-NAME = PROJECT_NAME
 ABOUT = {}
 
 # Use https://pypi.org/classifiers/ for reference
@@ -41,6 +42,17 @@ CLASSIFIERS = [
     'Programming Language :: Python :: 3.7',
     'Natural Language :: English',
     'Topic :: Software Development :: Libraries']
+
+
+#     name='<package>',
+# ...
+#     install_requires=[
+#         '<normal_dependency>',
+#          # Private repository
+#         '<dependency_name> @ git+ssh://git@github.com/<user>/<repo_name>@<branch>',
+#          # Public repository
+#         '<dependency_name> @ https://github.com/<user>/<repo_name>@<branch>',
+#     ],
 
 setup(
     version=versioneer.get_version(),
