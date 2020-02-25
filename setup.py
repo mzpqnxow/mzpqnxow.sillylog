@@ -14,12 +14,13 @@ AUTHOR = 'mzpqnxow'
 CURDIR = abspath(dirname(__file__))
 NAMESPACE = ['mzpqnxow']
 PACKAGE = 'sillylog'
-PROJECT_NAME = '{}'.format(PACKAGE)
+PROJECT_NAME = '{}.{}'.format('.'.join(NAMESPACE), PACKAGE)
 DESCRIPTION = 'A package containing common reusable functions and classes'
 URL = 'https://github.com/{}/{}'.format(AUTHOR, PROJECT_NAME)
 EMAIL = 'copyright@mzpqnxow.com'
 LICENSE = 'BSD 3-Clause'
-REQUIRED = ['jinja2', 'ujson']
+REQUIRED = [
+    'jinja2', 'ujson']
 
 NAME = '.'.join(NAMESPACE + [PROJECT_NAME])
 NAME = PROJECT_NAME
