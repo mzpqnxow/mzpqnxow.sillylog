@@ -3,6 +3,7 @@ from sys import argv
 import logging
 
 from sillylog.log import get_logger
+from sillylog.test import tester
 
 LOG, DEBUG, INFO, STATUS, WARN, ERROR, CRITICAL, EXCEPTION = get_logger(argv[0], None, level=logging.DEBUG, new=True)
 FATAL = CRITICAL  # The exiting version of CRITICAL
