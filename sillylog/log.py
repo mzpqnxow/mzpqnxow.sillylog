@@ -285,7 +285,6 @@ def get_logger(
     """
 
     # These are the two steps to add a log level, at a high level
-    addLevelName(LOGLEVEL_STATUS, 'STATUS')
     setLoggerClass(PipelineLogger)
 
     if logpath is None:
@@ -358,67 +357,10 @@ def get_logger(
 
     log_handler.setFormatter(LevelBasedFormatter(fmt=fmt, datefmt=datefmt))
     logger.addHandler(log_handler)
-    add_log_level('STATUS', LOGLEVEL_STATUS)
     logger.setLevel(level)
 
     # if new is False:
     #     raise NotImplemented('Not implemented / tested!')
     #     return logger, logger.debug, logger.info, logger.warning, logging.error, logging.critical, logging.exception
 
-    return logger, logger.debug, logger.info, logger.user, logger.warning, logger.error, logger.critical, logger.exception
-
-
-def add_log_level(level_name, level_num, log_method_name=None):
-    """
-    Comprehensively adds a new logging level to the `logging` module and the
-    currently configured logging class.
-
-    `level_name` becomes an attribute of the `logging` module with the value
-    `level_num`. `log_method_name` becomes a convenience method for both `logging`
-    itself and the class returned by `logging.getLoggerClass()` (usually just
-    `logging.Logger`). If `log_method_name` is not specified, `level_name.lower()` is
-    used.
-
-    To avoid accidental clobberings of existing attributes, this method will
-    raise an `AttributeError` if the level name is already an attribute of the
-    `logging` module or if the method name is already present
-
-    Example
-    -------
-    >>> add_log_level('TRACE', logging.DEBUG - 5)
-    >>> logging.getLogger(__name__).setLevel('TRACE')
-    >>> logging.getLogger(__name__).trace('that worked')
-    >>> logging.trace('so did this')
-    >>> logging.TRACE
-    5
-
-    Quick reminder:
-        STATUS=60,CRITICAL=50,ERROR=40,WARNING=30,INFO=20,DEBUG=10,NOTSET=0
-
-    When you set a log level, you are saying emit events for log
-    levels that are greater than that value. Keep that in mind.
-    """
-    if not log_method_name:
-        log_method_name = level_name.lower()
-
-    if hasattr(logging, level_name):
-        raise AttributeError(
-            '{} already defined in logging module'.format(level_name))
-    if hasattr(logging, log_method_name):
-        raise AttributeError(
-            '{} already defined in logging module'.format(log_method_name))
-    if hasattr(logging.getLoggerClass(), log_method_name):
-        raise AttributeError(
-            '{} already defined in logger class'.format(log_method_name))
-
-    def log_for_level(self, message, *args, **kwargs):
-        if self.isEnabledFor(level_num):
-            self._log(level_num, message, args, **kwargs)
-
-    def log_to_root(message, *args, **kwargs):
-        logging.log(level_num, message, *args, **kwargs)
-
-    logging.addLevelName(level_num, level_name)
-    setattr(logging, level_name, level_num)
-    setattr(logging.getLoggerClass(), log_method_name, log_for_level)
-    setattr(logging, log_method_name, log_to_root)
+    return logger, logger.debug, logger.info, logger.warning, logger.error, logger.critical, logger.exception
