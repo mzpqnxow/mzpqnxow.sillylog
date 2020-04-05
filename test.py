@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 import logging
-from sillylog.log import get_logger, LOGLEVEL_TRACE, LOGLEVEL_USER
+from sillylog.log import get_logger, LOGLEVEL_TRACE
 
-LOG, TRACE, DEBUG, INFO, WARN, ERROR, CRITICAL, EXCEPTION, STATUS = get_logger('main', log_level=logging.TRACE, datefmt='%h:%M:%s')
+LOG, TRACE, DEBUG, INFO, WARN, ERROR, CRITICAL, EXCEPTION, STATUS = get_logger('main', log_level=LOGLEVEL_TRACE, datefmt='%h:%M:%s')
 
 
 def test2(var):
