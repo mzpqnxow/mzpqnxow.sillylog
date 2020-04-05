@@ -208,6 +208,8 @@ def get_logger(
         the boilerplate stack frames end. There must be a simple way to do
         this but it escapes me now and I don't want to deal with it anymore
 
+        BTW- since when is logging.Filter.filter() a staticmethod? Weird...
+
         -AG
 
         """
