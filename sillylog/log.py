@@ -218,7 +218,6 @@ def get_logger(
 
     logger.addFilter(BacktraceFilter)
 
-<<<<<<< HEAD
     return (
         logger,
         logger.trace,
@@ -229,84 +228,3 @@ def get_logger(
         logger.critical,
         logger.exception,
         logger.user)
-=======
-    # These are the two steps to add a log level, at a high level
-    setLoggerClass(PipelineLogger)
-
-    if logpath is None:
-        logpath = expanduser('~/log')
-
-    if file_log_level is None:
-        file_log_level = level
-
-    if console_log_level is None:
-        console_log_level = level
-
-    if level is None:
-        level = logging.DEBUG
-
-    if fmt is None:
-        fmt = '%(asctime)s'
-        fmt += ' %(levelname)5s '
-        fmt += APPNAME
-        fmt += ' %(name)8s'
-        fmt += ' %(filename)s::%(funcName)s::%(lineno)d'
-        fmt += ' %(message)s'
-
-    if source_name is None:
-        source_name = ''
-    elif '/' in source_name:
-        raise RuntimeError('source_name can not contain a slash character, makes no sense ...')
-
-    if logpath[0] != '/':
-        raise RuntimeError('logpath must be an absolute path, sorry')
-
-    if mklogdir is True:
-        _mkdir_parents(logpath)
-
-    # TODO: Should this be set this way, without a handler?
-    #       Should it be NOTSET?
-    logger = logging.getLogger(name)
-    logger.setLevel(level)
-
-    logger.propagate = False
-
-    # You can mess around with different handlers if you'd like
-    # but I don't use them
-
-    # filename = join_path(logpath, '{}.log'.format(APPNAME))
-    # _apply_log_handler(
-    #     logger,
-    #     log_format,
-    #     file_log_level,
-    #     TimedRotatingFileHandler,
-    #     filename,
-    #     when='midnight',
-    #     interval=1)
-    # # rotating_file_handler.suffix = '%Y%m%d'
-
-    # _apply_log_handler(
-    #     logger,
-    #     log_format,
-    #     file_log_level,
-    #     RotatingFileHandler,
-    #     join_path(logpath, '{}.log'.format(APPNAME)),
-    #     maxBytes=rotate_params[0],
-    #     backupCount=rotate_params[1])
-
-    # Basic console stderr/stdout handler
-    log_handler = _apply_log_handler(
-        logger,
-        fmt,
-        console_log_level,
-        ExitingStreamHandler)
-
-    log_handler.setFormatter(LevelBasedFormatter(fmt=fmt, datefmt=datefmt))
-    logger.addHandler(log_handler)
-    logger.setLevel(level)
-
-    # if new is False:
-    #     raise NotImplemented('Not implemented / tested!')
-    #     return logger, logger.debug, logger.info, logger.warning, logging.error, logging.critical, logging.exception
-
-    return logger, logger.debug, logger.info, logger.warning, logger.error, logger.critical, logger.exception
