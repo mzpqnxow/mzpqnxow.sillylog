@@ -2,7 +2,7 @@ import logging
 from logging import CRITICAL, FATAL, ERROR, WARNING, DEBUG, INFO
 from sys import argv
 from os import rename, unlink
-from os.path import basename, relpath
+from os.path import basename
 from lzma import open as lzma_open
 from sys import stderr
 import traceback
@@ -14,15 +14,32 @@ APPNAME = basename(argv[0])
 LOGLEVEL_TRACE = DEBUG - 1
 LOGLEVEL_USER = CRITICAL + 1
 
-# logging.USER_LEVELV_NUM = CRITICAL + 1
-# logging.addLevelName(logging.USER_LEVELV_NUM, "USER")
-
 
 def pretty_traceback_lines(skip=0, width=24, indent='  '):
+    """Make very pretty gdb inspired backtrace lines
+
+    Looks like this:
+        #0 test.py:test2:9     TRACE('helllapppapp!!!')
+        #1 test.py:test1:13    test2('ddd')
+        #2 test.py:main:23     test1()
+        #3 test.py:<module>:29 main()
+
+    Notes
+    -----
+    It is up to the caller to join the lines of strings in some
+    way and then print them out
+    The caller needs to provide a `skip` parameter or there will
+    be some uninteresting frames printed. This number depepnds on
+    the context of the call. So it's kind of a mess. However, it
+    is very useful for use in a logging.Filter extension since the
+    skip value will be constant
+
+    See the BacktraceFilter in this file for an example
+
+    """
     traceback_lines = list()
     stackframe_list = traceback.extract_stack()
     stackframe_list.reverse()
-    strackframe_list = stackframe_list[skip:]
     for frame_number, stack in enumerate(stackframe_list[skip:]):
         call_line = stack.line
         call_filename = stack.filename
@@ -36,24 +53,24 @@ def pretty_traceback_lines(skip=0, width=24, indent='  '):
     return traceback_lines
 
 
-def addLoggingLevel(levelName, levelNum, methodName=None):
+def _add_log_level(level_name, level_num, method_name=None):
     """
     Comprehensively adds a new logging level to the `logging` module and the
     currently configured logging class.
 
-    `levelName` becomes an attribute of the `logging` module with the value
-    `levelNum`. `methodName` becomes a convenience method for both `logging`
+    `level_name` becomes an attribute of the `logging` module with the value
+    `level_num`. `method_name` becomes a convenience method for both `logging`
     itself and the class returned by `logging.getLoggerClass()` (usually just
-    `logging.Logger`). If `methodName` is not specified, `levelName.lower()` is
+    `logging.Logger`). If `method_name` is not specified, `level_name.lower()` is
     used.
 
     To avoid accidental clobberings of existing attributes, this method will
     raise an `AttributeError` if the level name is already an attribute of the
-    `logging` module or if the method name is already present 
+    `logging` module or if the method name is already present
 
     Example
     -------
-    >>> addLoggingLevel('TRACE', logging.DEBUG - 5)
+    >>> _add_log_level('TRACE', logging.DEBUG - 5)
     >>> logging.getLogger(__name__).setLevel("TRACE")
     >>> logging.getLogger(__name__).trace('that worked')
     >>> logging.trace('so did this')
@@ -61,38 +78,54 @@ def addLoggingLevel(levelName, levelNum, methodName=None):
     5
 
     """
-    if not methodName:
-        methodName = levelName.lower()
+    if not method_name:
+        method_name = level_name.lower()
 
-    if hasattr(logging, levelName):
-        raise AttributeError('{} already defined in logging module'.format(levelName))
-    if hasattr(logging, methodName):
-        raise AttributeError('{} already defined in logging module'.format(methodName))
-    if hasattr(logging.getLoggerClass(), methodName):
-        raise AttributeError('{} already defined in logger class'.format(methodName))
+    if hasattr(logging, level_name):
+        raise AttributeError('{} already defined in logging module'.format(level_name))
+    if hasattr(logging, method_name):
+        raise AttributeError('{} already defined in logging module'.format(method_name))
+    if hasattr(logging.getLoggerClass(), method_name):
+        raise AttributeError('{} already defined in logger class'.format(method_name))
 
     # This method was inspired by the answers to Stack Overflow post
     # http://stackoverflow.com/q/2183233/2988730, especially
     # http://stackoverflow.com/a/13638084/2988730
-    def logForLevel(self, message, *args, **kwargs):
-        if self.isEnabledFor(levelNum):
-            self._log(levelNum, message, args, **kwargs)
+    def log_for_level(self, message, *args, **kwargs):
+        if self.isEnabledFor(level_num):
+            self._log(level_num, message, args, **kwargs)
 
-    def logToRoot(message, *args, **kwargs):
-        logging.log(levelNum, message, args, **kwargs)
+    def log_to_root(message, *args, **kwargs):
+        logging.log(level_num, message, args, **kwargs)
 
-    logging.addLevelName(levelNum, levelName)
-    setattr(logging, levelName, levelNum)
-    setattr(logging.getLoggerClass(), methodName, logForLevel)
-    setattr(logging, methodName, logToRoot)
+    logging.addLevelName(level_num, level_name)
+    setattr(logging, level_name, level_num)
+    setattr(logging.getLoggerClass(), method_name, log_for_level)
+    setattr(logging, method_name, log_to_root)
 
 
-addLoggingLevel('USER', CRITICAL + 1)
-addLoggingLevel('TRACE', DEBUG - 1)
+_add_log_level('USER', CRITICAL + 1)
+_add_log_level('TRACE', DEBUG - 1)
 
 
 class LevelBasedFormatter(logging.Formatter):
-    def __init__(self, log_level_formats=None, fmt='%(levelname)s: %(msg)s', datefmt='%H:%M', style='%'):
+    """Create a special formatter that allows different fmt for each log level
+
+    Pass a dict() where the key is the log_level and the value is the format
+    string for that level and it will override the defaults below
+
+    TODO(AG): Don't assume that TRACE and USER levels were added, wrap those
+              with conditionals using hasattr()
+
+    """
+
+    def __init__(
+        self,
+        log_level_formats=None,
+        fmt='%(levelname)s: %(msg)s',
+        datefmt='%H:%M',
+        style='%'
+    ):
         super().__init__(fmt=fmt, datefmt=datefmt, style=style)
         self._initialize_level_formats(log_level_formats=log_level_formats)
 
@@ -135,19 +168,9 @@ class LevelBasedFormatter(logging.Formatter):
         # when the logger formatter was instantiated
         format_orig = self._style._fmt
 
-
-
-
         # Replace the original format with one customized by logging level
         if record.levelno not in self._log_level_formats.keys():
             raise RuntimeError('Incomplete logging implementation!')
-        
-        # Yeah, this is really, really bad... I'm sick of reading the logging
-        # source to see how to properly do this ...
-        # if record.levelno == logging.TRACE:
-        #    lines = pretty_traceback_lines(skip=9)
-        #    record.stack_info = '\n'.join(lines) + '\n'
-        
         self._style._fmt = self._log_level_formats[record.levelno]
         # Call the original formatter class to do the grunt work
         result = logging.Formatter.format(self, record)
@@ -215,7 +238,9 @@ def get_logger(
         """
         @staticmethod
         def filter(record):
-            record.backtrace = '\n'.join(pretty_traceback_lines(skip=6))
+            magic_backtrace_depth = 6
+            record.backtrace = '\n'.join(pretty_traceback_lines(
+                skip=magic_backtrace_depth))
             return True
 
     logger.addFilter(BacktraceFilter)
