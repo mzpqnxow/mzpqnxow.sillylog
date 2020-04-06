@@ -1,3 +1,33 @@
+"""Customized Python3 logging including additional levels and per-level formatting
+
+
+Example
+-------
+
+import logging
+from sillylog.log import get_logger, LOGLEVEL_TRACE
+
+LOG, TRACE, DEBUG, INFO, WARN, ERROR, CRITICAL, EXCEPTION, STATUS = get_logger(
+    'main', log_level=LOGLEVEL_TRACE, datefmt='%h:%M:%s')
+
+Notes
+-----
+
+The two added log levels are `trace` and `status`
+
+The `status` level is meant to be roughly equivalent to `print()` but via the
+logging system so that it can be cleanly logged to files, rotated, or sent
+via other standard log handlers. The `status` level will *always* fire as it
+is set to be one level above CRITICAL/FATAL
+
+The `trace` level is meant to be a super-verbose version of `debug` and it will
+print a very nice backtrace, inspired by the gdb backtrace command
+
+The rest is pretty standard with the exception of being able to specify custom
+format strings for each log level rather than being stuck with the same one
+for all as is the case with the standard Python logging package
+
+"""
 import logging
 from logging import CRITICAL, FATAL, ERROR, WARNING, DEBUG, INFO
 from sys import argv
