@@ -24,4 +24,4 @@ That all said, I will accept PR and issues happily. But for now, development is 
 
 ## License
 
-![License](img/BSD-3Clause.jpg)\
+BSD 3-Clause
