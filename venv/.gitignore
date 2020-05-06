@@ -8,9 +8,8 @@
 #
 # AG
 #
-/*    
+/**
 !/*constraints*.txt*
 !/*requirements*.txt*
 !/*pyproject.toml*
 !/.gitignore
-
