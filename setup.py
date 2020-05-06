@@ -1,26 +1,15 @@
 #!/usr/bin/env python3
-"""Standard setuptools setup.py script using versioneer"""
-
-# Python Standard Libraries
 from os.path import abspath, dirname
+from setuptools import setup
 
-# External Dependencies
-from setuptools import find_packages, setup
-
-# Package Imports
 import versioneer
 
 AUTHOR = 'mzpqnxow'
 CURDIR = abspath(dirname(__file__))
 NAMESPACE = ['mzpqnxow']
 PACKAGE = 'sillylog'
-PROJECT_NAME = '{}'.format(PACKAGE)
-DESCRIPTION = 'A library that makes basic logging relatively easy'
-URL = 'https://github.com/{}/{}'.format(AUTHOR, PROJECT_NAME)
-EMAIL = 'copyright@mzpqnxow.com'
-LICENSE = 'BSD 3-Clause'
+PROJECT_NAME = 'py{}'.format(PACKAGE)
 REQUIRED = []
-
 NAME = '.'.join(NAMESPACE + [PROJECT_NAME])
 ABOUT = {}
 
@@ -42,11 +31,4 @@ setup(
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
     name=NAME,
-    classifiers=CLASSIFIERS,
-    packages=find_packages(),
-    install_requires=REQUIRED,
-    author=AUTHOR,
-    author_email=EMAIL,
-    description=DESCRIPTION,
-    license=LICENSE,
-    url=URL)
+    classifiers=CLASSIFIERS)
